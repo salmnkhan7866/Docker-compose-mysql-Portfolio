@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  app:
+    build: /web
+    container_name: email-app
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: root123
+      DB_NAME: email
+    depends_on:
+      - mysql
+    networks:
+      - two-tier
+
+  mysql:
+    image: mysql:5.7
+    container_name: email-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: email
+    ports:
+      - "3307:3306"   # exposes MySQL on localhost:3307
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - two-tier
+
+volumes:
+  db_data:
+
+networks:
+  two-tier:
+    driver: bridge
